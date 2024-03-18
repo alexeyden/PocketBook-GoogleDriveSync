@@ -18,10 +18,10 @@ Project setup:
 
 Building:
 
-1. Set absoulte paths in `sync-app/.cargo/config.toml` to the location of this project on your system (path to the linker wrapper and sysroot path)
-2. Set correct paths in the `sync-app/build.sh` (path to the toolchain)
+1. Set absoulte paths in `.cargo/config.toml` to the location of this project on your system (path to the linker wrapper and sysroot path)
+2. Set correct paths in the `build.sh` (path to the toolchain)
 3. Set `FOLDER_ID` and `API_KEY` variables in the `build.sh` to your folder ID and API key saved during project setup. These variables will be embedded into the app binary.
-4. You will also need to change linker name in `sync-app/ldwrap.sh` if your toolchain prefix is different.
-5. Build the app with: `cd sync-app && ./build.sh`
+4. You will also need to change linker name in `ldwrap.sh` if your toolchain prefix is different.
+5. Build the app with: `./build.sh`
 6. Copy `GoogleDriveSync.app` to the device at `/mnt/ext1/applications`
 7. App is ready to use now
