@@ -9,7 +9,3 @@ edition = "2021"
 gdrive-api = { path = "../libs/gdrive-api" }
 inkview = { path = "../libs/inkview" }
 sys-stubs = { path = "../libs/sys-stubs" }
-
-[profile.release]
-panic="abort"
-strip="symbols"

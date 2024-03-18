@@ -1,5 +1,5 @@
 [target.armv5te-unknown-linux-gnueabi]
-linker="/home/alexey/Dev/lab/pbook/gdrive/sync-app/ldwrap.sh"
+linker="/home/alexey/Dev/lab/pbook/gdrive/ldwrap.sh"
 rustflags = [
     "-C", "link-arg=-march=armv5te",
     "-C", "link-arg=-mfpu=vfp",

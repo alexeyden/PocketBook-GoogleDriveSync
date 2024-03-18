@@ -1,11 +1,8 @@
 use std::collections::HashMap;
 
-mod auth;
-mod config;
 mod error;
 mod json;
 
-pub use self::config::*;
 pub use self::error::*;
 
 use self::json::try_get_field;
@@ -47,50 +44,20 @@ impl FileDownload {
 }
 
 pub struct GoogleDriveApi {
-    config: ApiConfig,
+    key: String,
 }
 
 impl GoogleDriveApi {
-    pub fn new(config: ApiConfig) -> Self {
-        Self { config }
-    }
-
-    pub fn config(&self) -> &ApiConfig {
-        &self.config
-    }
-
-    pub fn auth(&mut self) -> Result<(), ApiError> {
-        let req = self::auth::AuthRequest {
-            config: &self.config,
-            browser_command: "xdg-open".to_owned(),
-            response_port: 8066,
-            response_msg: "Auth tokens have been received, you may close the browser now"
-                .to_owned(),
-        };
-        let token = self::auth::auth_desktop(req)?;
-
-        self.config.access_token = token.access;
-        self.config.refresh_token = token.refresh;
-
-        Ok(())
-    }
-
-    pub fn auth_refresh(&mut self) -> Result<(), ApiError> {
-        let token = self::auth::refresh_access_token(&self.config)?;
-        self.config.access_token = token.access;
-
-        Ok(())
+    pub fn new(key: String) -> Self {
+        Self { key }
     }
 
     pub fn list_files(&self, q: &str) -> Result<Vec<DriveFile>, ApiError> {
         const ERR_DOMAIN: &'static str = "files api";
 
         let r = ureq::get("https://www.googleapis.com/drive/v3/files")
-            .set(
-                "Authorization",
-                &format!("Bearer {}", self.config.access_token),
-            )
             .query("q", q)
+            .query("key", &self.key)
             .query("fields", "files(id,name,size)")
             .call()?
             .into_string()?;
@@ -126,11 +93,8 @@ impl GoogleDriveApi {
         path: &std::path::Path,
     ) -> Result<FileDownload, ApiError> {
         let r = ureq::get(&format!("https://www.googleapis.com/drive/v3/files/{}", id))
-            .set(
-                "Authorization",
-                &format!("Bearer {}", self.config.access_token),
-            )
             .query("alt", "media")
+            .query("key", &self.key)
             .call()?;
 
         let buf = vec![0; 4096];
